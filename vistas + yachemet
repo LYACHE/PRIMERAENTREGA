@@ -1,0 +1,355 @@
+DROP TABLE IF EXISTS `dimcliente`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimcliente` (
+  `idcliente` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(255) NOT NULL,
+  `contrasena` char(255) NOT NULL,
+  `direccion` varchar(255) NOT NULL,
+  `edad` int NOT NULL,
+  `codpostal` varchar(255) NOT NULL,
+  PRIMARY KEY (`idcliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=11226667 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimcliente`
+--
+
+LOCK TABLES `dimcliente` WRITE;
+/*!40000 ALTER TABLE `dimcliente` DISABLE KEYS */;
+INSERT INTO `dimcliente` VALUES (1,'carlos sanchez','****','juan domingo 343 san isidro bs as',30,'893'),(2,'juan lopez','*****','hilario lagos 2830 lujan bs as',45,'3405'),(3,'camila michel','***','el zorzal 4080 , el caminito , cordoba',22,'3380'),(4,'roberto gomez','*******','thames 3545, munro, bs as',33,'5790'),(5,'claudia nando','*****','curupaiti 350, virrey del pino, bs as',50,'890'),(6,'cristian domingo','*********','gorriti 5550, alcaraz, neuquen ',33,'1150'),(7,'claudia ruso','*****','matheu 945, quilmes , bs as',21,'1190'),(8,'flavia roconti','*******','wilde 835, palermo, bs as',20,'1340'),(9,'miguel perez','*****','gascon 343, mar del plata, bs as',25,'2850'),(10,'romina ganti','*******','virrey vertiz 8920, las moras, tucuman',30,'5558');
+/*!40000 ALTER TABLE `dimcliente` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+DROP TABLE IF EXISTS `dimdevoluciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimdevoluciones` (
+  `iddevoluciones` int NOT NULL,
+  `idventas` int NOT NULL,
+  `idindmujer` int NOT NULL,
+  `idindhombre` int NOT NULL,
+  `fechahora` datetime DEFAULT NULL,
+  PRIMARY KEY (`iddevoluciones`),
+  KEY `idventas` (`idventas`),
+  KEY `idindmujer` (`idindmujer`),
+  KEY `idindhombre` (`idindhombre`),
+  CONSTRAINT `dimdevoluciones_ibfk_1` FOREIGN KEY (`idventas`) REFERENCES `factventas` (`idventas`),
+  CONSTRAINT `dimdevoluciones_ibfk_2` FOREIGN KEY (`idindmujer`) REFERENCES `dimindmujer` (`idindmujer`),
+  CONSTRAINT `dimdevoluciones_ibfk_3` FOREIGN KEY (`idindhombre`) REFERENCES `dimindhombre` (`idindhombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimdevoluciones`
+--
+
+LOCK TABLES `dimdevoluciones` WRITE;
+/*!40000 ALTER TABLE `dimdevoluciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dimdevoluciones` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:21
+
+
+DROP TABLE IF EXISTS `dimfecha`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimfecha` (
+  `idfechaventa` int NOT NULL,
+  `anio` int NOT NULL,
+  `mes` int NOT NULL,
+  `semana` int NOT NULL,
+  `diasemana` varchar(255) NOT NULL,
+  PRIMARY KEY (`idfechaventa`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimfecha`
+--
+
+LOCK TABLES `dimfecha` WRITE;
+/*!40000 ALTER TABLE `dimfecha` DISABLE KEYS */;
+INSERT INTO `dimfecha` VALUES (1,2021,11,4,'30'),(2,2021,11,1,'2'),(3,2021,11,1,'1'),(4,2021,11,1,'5'),(5,2021,11,2,'10'),(6,2021,11,2,'9'),(7,2021,11,2,'8'),(8,2021,11,3,'12'),(9,2021,11,4,'24'),(10,2021,11,4,'25'),(11,2021,11,4,'26'),(12,2021,11,4,'27');
+/*!40000 ALTER TABLE `dimfecha` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:22
+
+
+-- Table structure for table `dimindhombre`
+--
+
+DROP TABLE IF EXISTS `dimindhombre`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimindhombre` (
+  `idindhombre` int NOT NULL,
+  `tipodeprenda` varchar(255) NOT NULL,
+  `talles` varchar(255) DEFAULT NULL,
+  `color` tinytext,
+  `preciototal` float DEFAULT NULL,
+  `costovalor` float DEFAULT NULL,
+  PRIMARY KEY (`idindhombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimindhombre`
+--
+
+LOCK TABLES `dimindhombre` WRITE;
+/*!40000 ALTER TABLE `dimindhombre` DISABLE KEYS */;
+INSERT INTO `dimindhombre` VALUES (112233,'remera cuello redondo','xs','azul ',2500,1000),(112244,'remera long size','m','blanca',2500,1000),(112255,'pantalon 90s recto','l','azul ',2500,1000),(112266,'pantalon italian','m','beige',6500,3000),(112277,'pantalon skate','m','negro',7500,3000),(112288,'camisa nativa','s','marron',3500,1500),(112299,'camisa flores','xl','blanca',3600,1500),(11221010,'camisa italian','xxl','azul ',4200,1500),(11221111,'camisa 90s','m','roja',2900,1500),(11222222,'campera recta 90s','m','roja',12000,4500),(11223333,'campera corta 90s','s','negra',10650,4500),(11224444,'gorra nativa ','m','rosa',2500,950),(11225555,'gorra 90s','m','violeta',2600,950),(11226666,'gorra skate ','m','negra',2800,950);
+/*!40000 ALTER TABLE `dimindhombre` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:22
+
+
+
+-- Table structure for table `dimindmujer`
+--
+
+DROP TABLE IF EXISTS `dimindmujer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimindmujer` (
+  `idindmujer` int NOT NULL,
+  `tipodeprenda` varchar(255) NOT NULL,
+  `talles` varchar(255) DEFAULT NULL,
+  `color` tinytext,
+  `preciototal` float DEFAULT NULL,
+  `costovalor` float DEFAULT NULL,
+  PRIMARY KEY (`idindmujer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimindmujer`
+--
+
+LOCK TABLES `dimindmujer` WRITE;
+/*!40000 ALTER TABLE `dimindmujer` DISABLE KEYS */;
+INSERT INTO `dimindmujer` VALUES (110050,'remera corte alto','xs','azul ',3000,1000),(110060,'remera long size','m','blanca',2500,1000),(110070,'pantalon tiro alto','l','azul ',5000,1000),(110080,'pantalon recto','m','beige',6500,3000),(110090,'pantalon copa','m','negro',7000,3000),(110100,'camisa nativa','s','marron',4000,1500),(110200,'camisa flores','xl','blanca',3600,1500),(110300,'camisa italian','xxl','azul ',4200,1500),(110400,'camisa 90s','m','roja',2900,1500),(110500,'campera recta 90s','m','roja',10000,4500),(110600,'campera corta 90s','s','negra',12000,4500),(110700,'gorro paja','m','rosa',3000,950),(110800,'boina','m','violeta',4000,950),(110900,'gorro lana','m','negra',2900,950);
+/*!40000 ALTER TABLE `dimindmujer` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:21
+
+
+-- Table structure for table `dimlogistica`
+--
+
+DROP TABLE IF EXISTS `dimlogistica`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimlogistica` (
+  `idlogistica` int NOT NULL,
+  `empresa` varchar(255) DEFAULT NULL,
+  `precioporkg` decimal(10,2) DEFAULT NULL,
+  `pesototal` decimal(10,2) DEFAULT NULL,
+  `preciototal` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`idlogistica`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimlogistica`
+--
+
+LOCK TABLES `dimlogistica` WRITE;
+/*!40000 ALTER TABLE `dimlogistica` DISABLE KEYS */;
+INSERT INTO `dimlogistica` VALUES (1,'gopedidos',50.00,1.00,50.00),(2,'masterunion',50.00,1.50,75.00),(3,'correo argentino',50.00,2.00,100.00),(4,'oca',50.00,2.50,125.00),(5,'tellevotodo',50.00,3.00,150.00),(6,'oca',50.00,1.00,50.00),(7,'oca',50.00,1.50,75.00),(8,'oca',50.00,2.00,100.00),(9,'oca',50.00,2.50,125.00),(10,'oca',50.00,3.00,150.00),(11,'retiro local',0.00,0.00,0.00);
+/*!40000 ALTER TABLE `dimlogistica` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:22
+
+
+
+-- Table structure for table `dimtiendaonline`
+--
+
+DROP TABLE IF EXISTS `dimtiendaonline`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dimtiendaonline` (
+  `idtienda` int NOT NULL,
+  `razonsocial` varchar(255) NOT NULL,
+  `codpostal` int DEFAULT NULL,
+  `pais` varchar(255) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dimtiendaonline`
+--
+
+LOCK TABLES `dimtiendaonline` WRITE;
+/*!40000 ALTER TABLE `dimtiendaonline` DISABLE KEYS */;
+INSERT INTO `dimtiendaonline` VALUES (1,'moda moda',255,'argentina','cura alievi 345, caba, bs as'),(2,'rococo',2458,'argentina','verduga 787,caba, bs as'),(3,'detodito',2360,'argentina','lamadrid 4555, caba,bs as');
+/*!40000 ALTER TABLE `dimtiendaonline` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:22
+
+
+-- Table structure for table `factventas`
+--
+
+DROP TABLE IF EXISTS `factventas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `factventas` (
+  `idventas` int NOT NULL AUTO_INCREMENT,
+  `idcliente` int NOT NULL,
+  `idtienda` int NOT NULL,
+  `idindhombre` int NOT NULL,
+  `idindmujer` int NOT NULL,
+  `idfechaventa` int NOT NULL,
+  `idlogistica` int NOT NULL,
+  `preciototal` float DEFAULT NULL,
+  `impuesto` varchar(255) DEFAULT NULL,
+  `formasdepago` varchar(255) DEFAULT NULL,
+  `costo` char(255) NOT NULL,
+  `cantidad` int NOT NULL,
+  PRIMARY KEY (`idventas`),
+  KEY `idcliente` (`idcliente`),
+  KEY `idtienda` (`idtienda`),
+  KEY `idindhombre` (`idindhombre`),
+  KEY `idindmujer` (`idindmujer`),
+  KEY `idfechaventa` (`idfechaventa`),
+  KEY `idlogistica` (`idlogistica`),
+  CONSTRAINT `factventas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `dimcliente` (`idcliente`),
+  CONSTRAINT `factventas_ibfk_2` FOREIGN KEY (`idtienda`) REFERENCES `dimtiendaonline` (`idtienda`),
+  CONSTRAINT `factventas_ibfk_3` FOREIGN KEY (`idindhombre`) REFERENCES `dimindhombre` (`idindhombre`),
+  CONSTRAINT `factventas_ibfk_4` FOREIGN KEY (`idindmujer`) REFERENCES `dimindmujer` (`idindmujer`),
+  CONSTRAINT `factventas_ibfk_5` FOREIGN KEY (`idfechaventa`) REFERENCES `dimfecha` (`idfechaventa`),
+  CONSTRAINT `factventas_ibfk_6` FOREIGN KEY (`idlogistica`) REFERENCES `dimlogistica` (`idlogistica`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `factventas`
+--
+
+LOCK TABLES `factventas` WRITE;
+/*!40000 ALTER TABLE `factventas` DISABLE KEYS */;
+INSERT INTO `factventas` VALUES (1,5,1,112277,110050,1,1,3630,'21','mercadopago','2000',1),(2,10,1,112277,110200,2,1,4356,'21','mercadopago','2200',1),(3,9,1,112277,110700,3,1,3630,'21','mercadopago','1500',1),(4,7,1,112244,110050,9,6,3509,'21','mercadopago','1600',1),(5,6,1,112288,110050,10,1,4235,'21','mercadopago','2600',1),(6,4,1,11224444,110050,11,6,3509,'21','mercadopago','1900',1),(7,3,1,112277,110050,5,11,9075,'21','mercadopago','4900',1),(8,9,1,112277,110700,4,1,3630,'21','mercadopago','1500',1),(9,8,1,112255,110050,11,6,3025,'21','mercadopago','1500',1),(10,7,1,11222222,110050,10,6,14520,'21','mercadopago','8000',1),(12,10,1,112255,110050,9,6,3025,'21','mercadopago','1500',1),(13,5,1,112288,110050,8,6,4235,'21','mercadopago','2600',1),(14,4,1,112244,110050,7,11,3025,'21','mercadopago','1200',1),(15,10,1,112277,110900,6,1,3509,'21','mercadopago','1300',1),(16,1,1,112277,110050,5,1,3509,'21','mercadopago','1100',1);
+/*!40000 ALTER TABLE `factventas` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-07 23:56:21
+
+
+#vistas (consultas)
+
+
+#seleccionar los clientes y precio total que gastaron cada uno
+SELECT dimcliente.usuario, factventas.preciototal FROM dimcliente
+INNER JOIN factventas on dimcliente.idcliente = factventas.idcliente;
+
+#mostrar todas las ventas ordenadas por fecha
+select * from factventas
+order by idfechaventa
+
+# selecionar todas las ventas y clientes donde la logistica se alla hecho por 'gopedidos'
+SELECT idventas, idcliente from factventas 
+where idlogistica = (select idlogistica from dimlogistica where empresa ='gopedidos')
+
+#sumar el valor de todas las ventas realizadas y el costo, para calcular la ganancia
+SELECT sum(preciototal) - sum(costo) as ganancia from factventas;
+
+#seleccionar todos los usuarios que vivan en bs as
+SELECT dimcliente.usuario
+from dimcliente join factventas
+on  dimcliente.idcliente = factventas.idcliente
+where factventas.preciototal > '2500';
+
+
+
+
+
+
+
+
+
+
+
