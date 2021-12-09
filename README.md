@@ -87,6 +87,8 @@ CREATE TABLE primeraentrega.dimdevoluciones(
 						FOREIGN KEY (idventas) REFERENCES factventas (idventas),
                         FOREIGN KEY (idindmujer) REFERENCES dimindumentariademujer(idindmujer),
                         FOREIGN KEY (idindhombre) REFERENCES dimindumentariadehombre (idindhombre));
+			
+
                         
                             
 
