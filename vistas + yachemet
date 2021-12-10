@@ -344,6 +344,26 @@ on  dimcliente.idcliente = factventas.idcliente
 where factventas.preciototal > '2500';
 
 
+#ENTREGA FUNCIONES
+
+
+#EJEMPLO 1
+SELECT idcliente,idfechaventa
+FROM factventas
+WHERE month(idfechaventa)=3;
+
+#EJEMPLO 2
+CREATE DEFINER=`root`@`localhost` FUNCTION `ingresar`(usuario int, edad int) RETURNS int
+    NO SQL
+BEGIN
+declare aceptado INT;
+IF edad >= 18 then
+return aceptado;
+else 
+return denegado;
+end if;
+RETURN 1;
+END
 
 
 
