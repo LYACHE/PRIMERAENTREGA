@@ -368,7 +368,34 @@ END
 
 
 
+#ENTREGA STORED PROCEDURE
 
+#1 EJEMPLO
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `consulta con ordenamiento`(in columna char(40))
+BEGIN
+	if columna <> '' then
+		set @ordenar = concat('order by', columna);
+        else
+        set @ordenar = '';
+	end if;
+	set @clausula = concat('select * from dimcliente', @ordenar);
+	prepare ejecutarSQL from @clausula;
+    execute ejecutarSQL;
+    deallocate prepare ejecutarSQL;
+
+END
+
+
+#2 EJEMPLO
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminar y agrgar valores`(in id int)
+BEGIN
+insert into dimindhombre(idindhombre,tipodeprenda,talles,color,preciototal,costovalor)
+values ('1001','modofolclore','xl','rojo','4500','2000');
+delete from dimindhombre
+where idindhombre = id;
+end
 
 
 
