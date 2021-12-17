@@ -88,6 +88,79 @@ CREATE TABLE primeraentrega.dimdevoluciones(
                         FOREIGN KEY (idindmujer) REFERENCES dimindumentariademujer(idindmujer),
                         FOREIGN KEY (idindhombre) REFERENCES dimindumentariadehombre (idindhombre));
 			
+			
+			
+ENTREGA TRIGGERS DIA 16/12
+
+
+/*TRABAJO UTILIZACION TRIGGERS*/
+
+/*tabla 1: FACTVENTAS*/
+
+/* Creacion de la tabla AUDITORIA_VENTAS que muestra fecha, hora y usurario de los registros de cada venta*/
+USE PRIMERAENTREGA;
+CREATE TABLE AUDITORIA_VENTAS (
+		IDVENTAS INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        USUARIO VARCHAR(255) NOT NULL,
+        FECHA DATE,
+        HORA VARCHAR (255),
+        TIPO_MOVIMIENTO VARCHAR(255));
+        
+/*creacion del trigger tipo AFTER, en el cual se regsitran las insersiones de ventas*/
+CREATE TRIGGER `AFT_INS_VENTA`
+    AFTER INSERT ON `FACTVENTAS` FOR EACH ROW
+    INSERT INTO `AUDITORIA_VENTAS` (USUARIO,FECHA,HORA,TIPO_MOVIEMIENTO)
+    VALUES (USER(),CURDATE(),CURTIME(),'INSERT');
+    
+/*ejemplo de insercion de venta*/
+INSERT INTO FACTVENTAS (IDCLIENTE,IDTIENDA,IDINDHOMBRE,IDINDMUJER,IDFECHAVENTA,IDLOGISTICA,PRECIOTOTAL,IMPUESTO,FORMASDEPAGO,COSTO,CANTIDAD)
+VALUES (4,1,112255,110050,2,6,4235,21,'mercadopago',2000,1);
+
+/*creacion del trigger tipo BEFORE, en el cual se registran las eliminacion de ventas*/
+CREATE TRIGGER `BEF_DEL_VENTA`
+    BEFORE DELETE ON `FACTVENTAS` FOR EACH ROW
+    INSERT INTO `AUDITORIA_VENTAS` (USUARIO,FECHA,HORA,TIPO_MOVIEMIENTO)
+    VALUES (USER(),CURDATE(),CURTIME(),'DELETE');
+
+/*ejemplo de eliminacion de venta*/
+DELETE FROM FACTVENTAS
+WHERE IDVENTAS = 8;
+
+
+/*------------------------------------------------------*/
+
+
+/*tabla 2: DIMINDHOMBRE*/
+
+/*creacion tabla UPDATE_INDHOMBRE , en la cual se registran todos los movimientos en el que se realizaron modificaciones en la tabla*/
+CREATE TABLE UPDATE_INDHOMBRE (
+	IDINDHOMBRE INT NOT NULL,
+    USUARIO VARCHAR(255),
+    FECHA DATE,
+    HORA VARCHAR(255));
+    
+    
+/*creacion del triger BEFORE update, en la cual se modifica el nombre de un producto*/
+CREATE TRIGGER `BEF_UPDATE_IND_HOMBRE`
+    BEFORE UPDATE ON `DIMINDHOMBRE` FOR EACH ROW
+    INSERT INTO `UPDATE_INDHOMBRE` (IDINDHOMBRE,USUARIO,FECHA,HORA)
+    VALUES (IDINDHOMBRE,USER(),CURDATE(),CURTIME());
+    
+/*ejemplo de update dentro de la tabla DIMINDHOMBRE*/
+UPDATE DIMINDHOMBRE
+SET COLOR = 'ROJO'
+WHERE IDINDHOMBRE = 112233;
+
+/*creacion del triger BEFORE delete, en el cual se registran los productos eliminados*/
+CREATE TRIGGER `BEF_DELETE_IND_HOMBRE`
+    BEFORE DELETE ON `DIMINDHOMBRE` FOR EACH ROW
+    INSERT INTO `UPDATE_INDHOMBRE` (IDINDHOMBRE,USUARIO,FECHA,HORA)
+    VALUES (IDINDHOMBRE,USER(),CURDATE(),CURTIME());
+    
+/*ejemplo de delete dentro de la tabla DIMINDHOMBRE*/
+DELETE FROM DIMINDHOMBRE
+WHERE IDINDHOMBRE = 112233;
+			
 
                         
                             
