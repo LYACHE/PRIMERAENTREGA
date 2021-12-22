@@ -1,0 +1,494 @@
+/* ENTREGA 2*/
+	/*NOMBRE: MODOMODA*/
+		/*BASE DE DATOS PLATAFORMA DE INDUMENTARIA*/
+					/*1.CREACION DE TABLAS*/
+					/*2.INSERCION DE DATOS*/
+					/*3.VISTAS*/
+					/*4.FUNCIONES*/
+					/*5.STORED PROCEDURE*/
+					/*6.TRIGGERS*/
+
+
+/*--------------------------- CREACION DE TABLAS ---------------------------*/
+
+
+
+/*--------------------------- DIMCLIENTE ---------------------------*/
+
+/*DIMCLIENTE:Es una tabla dimensional que tiene relación con Factventas.*/
+/*Esta tabla contiene los datos de los clientes que ingresan en la plataforma necesarios para la validación de la compra y la entrega de la misma.*/ 
+
+CREATE TABLE `dimcliente` (
+  `IDCLIENTE` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(255) NOT NULL,
+  `contrasena` char(255) NOT NULL,
+  `direccion` varchar(255) NOT NULL,
+  `edad` int NOT NULL,
+  `codpostal` varchar(255) NOT NULL,
+  PRIMARY KEY (`IDCLIENTE`)
+) ENGINE=InnoDB AUTO_INCREMENT=11226667 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+
+/*--------------------------- DIMDEVOLUCIONES ---------------------------*/
+/*DIMDEVOLUCIONES: Es una tabla dimensional que tiene relación con FactsVentas.*/
+/*En la misma podemos ver las ventas, que se devolvieron por fallas o equivocación de entrega.*/
+
+CREATE TABLE `dimdevoluciones` (
+  `iddevoluciones` int NOT NULL,
+  `idventas` int NOT NULL,
+  `idindmujer` int NOT NULL,
+  `idindhombre` int NOT NULL,
+  `fechahora` datetime DEFAULT NULL,
+  PRIMARY KEY (`iddevoluciones`),
+  KEY `idventas` (`idventas`),
+  KEY `idindmujer` (`idindmujer`),
+  KEY `idindhombre` (`idindhombre`),
+  CONSTRAINT `dimdevoluciones_ibfk_1` FOREIGN KEY (`idventas`) REFERENCES `factventas` (`IDVENTAS`),
+  CONSTRAINT `dimdevoluciones_ibfk_2` FOREIGN KEY (`idindmujer`) REFERENCES `dimindmujer` (`idindmujer`),
+  CONSTRAINT `dimdevoluciones_ibfk_3` FOREIGN KEY (`idindhombre`) REFERENCES `dimindhombre` (`idindhombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- DIMINDMUJER ---------------------------*/
+/*DIMINDMUJER: Es una tabla dimensional que tiene relación con FactVentas.*/
+/*Contiene todas las prendas de mujer de la tienda, con los detalles de precio, talle, color y el costo de la misma.*/
+
+CREATE TABLE `dimindmujer` (
+  `idindmujer` int NOT NULL,
+  `tipodeprenda` varchar(255) NOT NULL,
+  `talles` varchar(255) DEFAULT NULL,
+  `color` tinytext,
+  `preciototal` float DEFAULT NULL,
+  `costovalor` float DEFAULT NULL,
+  `stock` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idindmujer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- DIMINHOMBRE ---------------------------*/
+/*DIMINDHOMBRE: Es una tabla dimensional que tiene relación con FactVentas.*/
+/*Contiene todas las prendas de hombre de la tienda, con los detalles de precio, talle, color y el costo de lamisma.*/
+
+CREATE TABLE `dimindhombre` (
+  `idindhombre` int NOT NULL,
+  `tipodeprenda` varchar(255) NOT NULL,
+  `talles` varchar(255) DEFAULT NULL,
+  `color` tinytext,
+  `preciototal` float DEFAULT NULL,
+  `costovalor` float DEFAULT NULL,
+  `stock` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idindhombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- DIMLOGISTICA ---------------------------*/
+/*DIMLOGISTICA:Es una tabla dimensional que tiene relación con FactVentas.*/
+/*Nos permite saber si el cliente retira su pedido o se realiza el envio a su domicilio/dirección de entrega.*/
+
+CREATE TABLE `dimlogistica` (
+  `idlogistica` int NOT NULL,
+  `empresa` varchar(255) DEFAULT NULL,
+  `precioporkg` decimal(10,2) DEFAULT NULL,
+  `pesototal` decimal(10,2) DEFAULT NULL,
+  `preciototal` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`idlogistica`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- DIMTIENDAONLINE ---------------------------*/
+/*DIMTIENDAONLINE Es una tabla dimensional que tiene relación con FactVentas.*/
+/*Contiene los datos de las empresas online que tenemos registradas. En el caso que tengamos varias plataformas de ventas,
+ esto nos permite delimitar en cual de las mismas se realizó la compra.*/
+
+CREATE TABLE `dimtiendaonline` (
+  `idtienda` int NOT NULL,
+  `razonsocial` varchar(255) NOT NULL,
+  `codpostal` int DEFAULT NULL,
+  `pais` varchar(255) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- FACTVENTAS ---------------------------*/
+/*FACTVENTAS: Esta es la tabla de hechos de mi modelo dimensional.*/
+/*Contiene 11 columnas, de las cuales 1 es la PK (idVentas) y 4 Fk. En la misma podemos observar que contiene datos específicos 
+para llevar un control de las ventas online realizadas por los clientes. Además de conocer todo el detalle de la venta, gracias
+ a las tablas de dimensión indumentaria hombre/mujer y logística, podemos establecer una relación de PRECIO, COSTO y GASTOS, para 
+ calcular nuestra ganancia NETA. Tengamos en cuenta que nuestra ganancia puede variar dependiendo de la manera que nosotros vendamos,
+ porque si no cobramos envío, el costo del mismo se restara de nuestra ganancia; mismo si ofrecemos descuentos o promociones.*/
+
+CREATE TABLE `factventas` (
+  `IDVENTAS` int NOT NULL AUTO_INCREMENT,
+  `idcliente` int NOT NULL,
+  `idtienda` int NOT NULL,
+  `idindhombre` int NOT NULL,
+  `idindmujer` int NOT NULL,
+  `fecha` varchar(255) DEFAULT NULL,
+  `idlogistica` int NOT NULL,
+  `preciototal` float DEFAULT NULL,
+  `impuesto` varchar(255) DEFAULT NULL,
+  `formasdepago` varchar(255) DEFAULT NULL,
+  `costo` char(255) NOT NULL,
+  `cantidad` int NOT NULL,
+  PRIMARY KEY (`IDVENTAS`),
+  KEY `idcliente` (`idcliente`),
+  KEY `idtienda` (`idtienda`),
+  KEY `idindhombre` (`idindhombre`),
+  KEY `idindmujer` (`idindmujer`),
+  KEY `idfechaventa` (`fecha`) /*!80000 INVISIBLE */,
+  KEY `idlogistica` (`idlogistica`),
+  CONSTRAINT `factventas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `dimcliente` (`IDCLIENTE`),
+  CONSTRAINT `factventas_ibfk_2` FOREIGN KEY (`idtienda`) REFERENCES `dimtiendaonline` (`idtienda`),
+  CONSTRAINT `factventas_ibfk_3` FOREIGN KEY (`idindhombre`) REFERENCES `dimindhombre` (`idindhombre`),
+  CONSTRAINT `factventas_ibfk_4` FOREIGN KEY (`idindmujer`) REFERENCES `dimindmujer` (`idindmujer`),
+  CONSTRAINT `factventas_ibfk_6` FOREIGN KEY (`idlogistica`) REFERENCES `dimlogistica` (`idlogistica`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+/*--------------------------- INSERCION DE DATOS ---------------------------*/
+
+
+/*PARA PODER INSERTAR LOS DATOS A LAS TABLAS, CREE EN EXCEL EN HOJAS SEPARADAS CADA UNA DE LAS TABLAS SIN NINGUN ERROR Y DESPUES 
+PODER GUARDARLO COMO CSV. LUEGO DENTRO DE MYSQL ESCRIBIA LA SENTENCIA SELECT * FROM TABLE… E IMPORTABA LAS TABLAS COMPLETAS DONDE 
+DICE EXPORT/IMPORT. SELECCIONABA , TABLA YA EXISTENTE Y LUEGO DE REVISAR PONIA CONTINUAR HASTA FINALIZAR.*/
+/*PERO ADEMAS GRACIAS A LA EXPORTACION DEL SCRIPT PUEDO MOSTRAR LAS SENTENCIAS DE LA INSERCION DE DATOS*/
+
+
+
+/*--------------------------- INSERCION DE DATOS DIMCLIENTE ---------------------------*/
+
+INSERT INTO `dimcliente` 
+VALUES (1,'carlos sanchez','****','juan domingo 343 san isidro bs as',30,'893'),
+(2,'juan lopez','*****','hilario lagos 2830 lujan bs as',45,'3405'),
+(3,'camila michel','***','el zorzal 4080 , el caminito , cordoba',22,'3380'),
+(4,'roberto gomez','*******','thames 3545, munro, bs as',33,'5790'),
+(5,'claudia nando','*****','curupaiti 350, virrey del pino, bs as',50,'890'),
+(6,'cristian domingo','*********','gorriti 5550, alcaraz, neuquen ',33,'1150'),
+(7,'claudia ruso','*****','matheu 945, quilmes , bs as',21,'1190'),
+(8,'flavia roconti','*******','wilde 835, palermo, bs as',20,'1340'),
+(9,'miguel perez','*****','gascon 343, mar del plata, bs as',25,'2850'),
+(10,'romina ganti','*******','virrey vertiz 8920, las moras, tucuman',30,'5558');
+
+
+/*--------------------------- INSERCION DE DATOS DIMINDMUJER ---------------------------*/
+
+INSERT INTO `dimindmujer`
+ VALUES (110050,'remera corte alto','xs','azul ',3000,1000,'5'),
+ (110060,'remera long size','m','blanca',2500,1000,'5'),
+ (110070,'pantalon tiro alto','l','azul ',5000,1000,'5'),
+ (110080,'pantalon recto','m','beige',6500,3000,'5'),
+ (110090,'pantalon copa','m','negro',7000,3000,'5'),
+ (110100,'camisa nativa','s','marron',4000,1500,'5'),
+ (110200,'camisa flores','xl','blanca',3600,1500,'5'),
+ (110300,'camisa italian','xxl','azul ',4200,1500,'5'),
+ (110400,'camisa 90s','m','roja',2900,1500,'5'),
+ (110500,'campera recta 90s','m','roja',10000,4500,'5'),
+ (110600,'campera corta 90s','s','negra',12000,4500,'5'),
+ (110700,'gorro paja','m','rosa',3000,950,'5'),
+ (110800,'boina','m','violeta',4000,950,'5'),
+ (110900,'gorro lana','m','negra',2900,950,'5');
+ 
+ 
+ /*--------------------------- INSERCION DE DATOS DIMINDHOMBRE ---------------------------*/
+ 
+ INSERT INTO `dimindhombre`
+ VALUES (1001,'modofolclore','xl','rojo',4500,2000,'5'),
+ (112244,'remera long size','m','blanca',2500,1000,'5'),
+ (112255,'pantalon 90s recto','l','azul ',2500,1000,'5'),
+ (112266,'pantalon italian','m','beige',6500,3000,'5'),
+ (112277,'pantalon skate','m','negro',7500,3000,'5'),
+ (112288,'camisa nativa','s','marron',3500,1500,'5'),
+ (112299,'camisa flores','xl','blanca',3600,1500,'5'),
+ (11221010,'camisa italian','xxl','azul ',4200,1500,'5'),
+ (11221111,'camisa 90s','m','roja',2900,1500,'5'),
+ (11222222,'campera recta 90s','m','roja',12000,4500,'5'),
+ (11223333,'campera corta 90s','s','negra',10650,4500,'5'),
+ (11224444,'gorra nativa ','m','rosa',2500,950,'5'),
+ (11225555,'gorra 90s','m','violeta',2600,950,'5'),
+ (11226666,'gorra skate ','m','negra',2800,950,'5');
+ 
+ 
+  /*--------------------------- INSERCION DE DATOS DIMLOGISTICA ---------------------------*/
+  
+  INSERT INTO `dimlogistica` 
+  VALUES (1,'gopedidos',50.00,1.00,50.00),
+  (2,'masterunion',50.00,1.50,75.00),
+  (3,'correo argentino',50.00,2.00,100.00),
+  (4,'oca',50.00,2.50,125.00),
+  (5,'tellevotodo',50.00,3.00,150.00),
+  (6,'oca',50.00,1.00,50.00),
+  (7,'oca',50.00,1.50,75.00),
+  (8,'oca',50.00,2.00,100.00),
+  (9,'oca',50.00,2.50,125.00),
+  (10,'oca',50.00,3.00,150.00),
+  (11,'retiro local',0.00,0.00,0.00);
+  
+  
+   /*--------------------------- INSERCION DE DATOS DIMLOGISTICA ---------------------------*/
+   
+   INSERT INTO `dimtiendaonline`
+   VALUES (1,'moda moda',255,'argentina','cura alievi 345, caba, bs as'),
+   (2,'rococo',2458,'argentina','verduga 787,caba, bs as'),
+   (3,'detodito',2360,'argentina','lamadrid 4555, caba,bs as');
+   
+
+   
+   /*--------------------------- INSERCION DE DATOS FACTVENTAS ---------------------------*/
+   
+   INSERT INTO `factventas`
+   VALUES (1,5,1,112277,110050,'2021 12 21',1,3630,'21','mercadopago','2000',1),
+   (2,10,1,112277,110200,'2021 12 21',1,4356,'21','visa','2200',1),
+   (3,9,1,112277,110700,'2021 12 21',1,3630,'21','master card','1500',1),
+   (4,7,1,112244,110050,'2021 12 21',6,3509,'21','master card','1600',1),
+   (5,6,1,112288,110050,'2021 12 21',1,4235,'21','mercadopago','2600',1),
+   (6,4,1,11224444,110050,'2021 12 21',6,3509,'21','mercadopago','1900',1),
+   (7,3,1,112277,110050,'2021 12 21',11,9075,'21','american express','4900',1),
+   (8,9,1,112277,110700,'2021 12 21',1,3630,'21','master card','1500',1),
+   (9,8,1,112255,110050,'2021 12 21',6,3025,'21','american express','1500',1),
+   (10,7,1,11222222,110050,'2021 12 21',6,14520,'21','master card','8000',1),
+   (12,10,1,112255,110050,'2021 12 21',6,3025,'21','mercadopago','1500',1),
+   (13,5,1,112288,110050,'2021 12 21',6,4235,'21','american express','2600',1),
+   (14,4,1,112244,110050,'2021 12 21',11,3025,'21','american express','1200',1),
+   (15,10,1,112277,110900,'2021 12 21',1,3509,'21','mercadopago','1300',1),
+   (16,1,1,112277,110050,'2021 12 21',1,3509,'21','mercadopago','1100',1);
+
+
+
+
+	/*--------------------------- vistas ---------------------------*/
+
+
+	/*seleccionar los clientes y precio total que gastaron cada uno*/
+    /*clientes_gastos*/
+	CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+    VIEW `clientes_gastos` AS
+    SELECT 
+        `dimcliente`.`usuario` AS `usuario`,
+        `factventas`.`preciototal` AS `preciototal`
+    FROM
+        (`dimcliente`
+        JOIN `factventas` ON ((`dimcliente`.`IDCLIENTE` = `factventas`.`idcliente`)));
+        
+
+	/*mostrar todas las ventas ordenadas por fecha*/
+    /*ventas_fecha_order*/
+    
+	CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+	VIEW `ventas_fecha_order` AS
+    SELECT 
+        `factventas`.`IDVENTAS` AS `IDVENTAS`,
+        `factventas`.`idcliente` AS `idcliente`,
+        `factventas`.`idtienda` AS `idtienda`,
+        `factventas`.`idindhombre` AS `idindhombre`,
+        `factventas`.`idindmujer` AS `idindmujer`,
+        `factventas`.`fecha` AS `fecha`,
+        `factventas`.`idlogistica` AS `idlogistica`,
+        `factventas`.`preciototal` AS `preciototal`,
+        `factventas`.`impuesto` AS `impuesto`,
+        `factventas`.`formasdepago` AS `formasdepago`,
+        `factventas`.`costo` AS `costo`,
+        `factventas`.`cantidad` AS `cantidad`
+    FROM
+        `factventas`
+    ORDER BY `factventas`.`fecha`;
+    
+    
+	/*selecionar todas las ventas y clientes donde la logistica se alla hecho por 'gopedidos'*/
+    /*idventas_idcliente_where_gopedidos*/
+	CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+	VIEW `idventas_idcliente_where_gopedidos` AS
+    SELECT `factventas`.`IDVENTAS` AS `idventas`,
+          `factventas`.`idcliente` AS `idcliente`
+    FROM `factventas`
+    WHERE(`factventas`.`idlogistica` = (SELECT `dimlogistica`.`idlogistica`
+	FROM `dimlogistica`
+	WHERE (`dimlogistica`.`empresa` = 'gopedidos')));
+    
+
+	/*sumar el valor de todas las ventas realizadas y el costo, para calcular la ganancia*/
+	CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+	VIEW `ganancia` AS
+    SELECT (SUM(`factventas`.`preciototal`) - SUM(`factventas`.`costo`)) AS `ganancia`
+    FROM `factventas`;
+
+	/*seleccionar todos los usuarios que gastaron mas de 2500*/
+    /*`gasto_usuario_>2500`*/
+	CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+	VIEW `gasto_usuario_>2500` AS
+    SELECT `dimcliente`.`usuario` AS `usuario`
+    FROM(`dimcliente` JOIN `factventas` ON ((`dimcliente`.`IDCLIENTE` = `factventas`.`idcliente`)))
+    WHERE (`factventas`.`preciototal` > '2500');
+
+
+
+/*--------------------------- FUNCIONES ---------------------------*/
+
+/*ACCESO*/
+/*EN EL CASO QUE TENGA VARIAS PLATAFORMAS , ESTA FUNCION ME PERMITE SABER SI EN LA PLATAFORMA QUE ESTOY USANDO,
+CUAL ES LA EDAD QUE SE PERMITE TENER ACCESO*/
+
+	CREATE DEFINER=`root`@`localhost` FUNCTION `acceso`(edad int) RETURNS varchar(255) CHARSET utf8mb4
+    NO SQL
+	BEGIN
+	declare acceso varchar(255);
+	IF edad >= 18 then
+	set acceso='aceptado';
+	elseif edad < 18 then 
+	set acceso='denegado';
+	end if;
+	RETURN acceso;
+	END;
+    
+    
+    /*TARJETA*/
+    /*ESTA FUNCION ME PERMITE SABER CON QUE TARJETA PUEDEN ABONAR LOS CLIENTES,SI ESCRIBO (VISA,MASTERCARD,AMERICASEXPRESS O MERCADOPAGO)
+    ME DARA COMO RESULTADO 'ACEPTADO', DE LO CONTRARIO 'DENEGADO'*/
+    
+    CREATE DEFINER=`root`@`localhost` FUNCTION `tarjeta`(formas_de_pago varchar(255)) RETURNS varchar(255) CHARSET utf8mb4
+    NO SQL
+BEGIN
+declare tarjeta varchar(255);
+IF  formas_de_pago= 'visa' then
+set  tarjeta ='aceptado';
+elseif  formas_de_pago= 'mastercard'then
+set tarjeta = 'aceptado';
+elseif formas_de_pago= 'mercadopago' then
+set tarjeta = 'aceptado';
+elseif formas_de_pago= 'american express' then
+set tarjeta = 'aceptado';
+elseif formas_de_pago= 'mercadopago' then
+set tarjeta = 'aceptado';
+elseif  formas_de_pago!= 'visa' then
+set  tarjeta ='denegado';
+elseif  formas_de_pago!= 'mastercard'then
+set tarjeta = 'denegado';
+elseif formas_de_pago!= 'mercadopago' then
+set tarjeta = 'denegado';
+elseif formas_de_pago!='american express' then
+set tarjeta = 'denegado';
+elseif formas_de_pago!= 'mercadopago' then
+set tarjeta = 'denegado';
+end if;
+RETURN tarjeta;
+END;
+
+
+
+	/*--------------------------- STORED PROCEDURE ---------------------------*/
+
+
+	/*CONSULTA CON ORDENAMIENTO*/
+	/*SI YO INGRESO EL NOMBRE DE UNA COLUMNA DE LA TABLA 'DIMCLIENTE' SE ORDENAN LOS DATOS SEGUN ESA COLUMNA*/
+
+	CREATE DEFINER=`root`@`localhost` PROCEDURE `consulta con ordenamiento`(out columna varchar(255))
+	BEGIN
+	if columna <> '' then 
+	set @ordenar = concat ('order by', columna);
+	else
+	set @ordenar = '';
+	end if;
+	set @clausula = concat ('select * from dimcliente', @ordenar);
+	prepare ejecutarSQL from @clausula;
+    execute ejecutarSQL;
+    deallocate prepare ejecutarSQL;
+	END;
+
+
+	/*ELIMINAR Y AGREGAR VALORES*/
+    /*PERMITE AGREGAR UNA FILA DENTROO DE LA TABLA 'DIMINDHOMBRE' Y ELIMINA UNA FILA DE LA MISMA TABLA*/
+    
+    CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminar y agrgar valores`(in id int)
+	BEGIN
+	insert into dimindhombre(idindhombre,tipodeprenda,talles,color,preciototal,costovalor)
+	values ('1001','modofolclore','xl','rojo','4500','2000');
+	delete from dimindhombre
+	where idindhombre = id;
+	end;
+    
+    
+    
+
+ /*--------------------------- TRIGGERS ---------------------------*/
+ /*EN ESTA SECCION, REALIZAMOS LAS SENTENCIAS DE TRIGGER DENTRO DE LA TABLA PRINCIPAL O MAS IMPORTANTE
+ CON EL OBJETIVO DE ALMACENAR LOS DATOS EN OTRAS TABLAS Y GENERAR UN CONTROL DE LOS CAMBIOS QUE SE
+ HAYAN HECHO*/
+ 
+ /*tabla 1: FACTVENTAS*/
+
+/* Creacion de la tabla AUDITORIA_VENTAS que muestra fecha, hora y usurario de los registros de cada venta*/ 
+
+USE PRIMERAENTREGA; 
+CREATE TABLE AUDITORIA_VENTAS
+ ( IDVENTAS INT NOT NULL AUTO_INCREMENT PRIMARY KEY, USUARIO VARCHAR(255) NOT NULL, FECHA DATE, HORA VARCHAR (255), TIPO_MOVIMIENTO VARCHAR(255));
+
+/*creacion del trigger tipo AFTER, en el cual se regsitran las insersiones de ventas*/ 
+CREATE TRIGGER AFT_INS_VENTA AFTER INSERT ON FACTVENTAS 
+FOR EACH ROW INSERT INTO AUDITORIA_VENTAS (USUARIO,FECHA,HORA,TIPO_MOVIEMIENTO) 
+VALUES (USER(),CURDATE(),CURTIME(),'INSERT');
+
+/*ejemplo de insercion de venta*/ 
+INSERT INTO FACTVENTAS
+ (IDCLIENTE,IDTIENDA,IDINDHOMBRE,IDINDMUJER,IDFECHAVENTA,IDLOGISTICA,PRECIOTOTAL,IMPUESTO,FORMASDEPAGO,COSTO,CANTIDAD)
+ VALUES (4,1,112255,110050,2,6,4235,21,'mercadopago',2000,1);
+
+/*creacion del trigger tipo BEFORE, en el cual se registran las eliminacion de ventas*/ 
+CREATE TRIGGER BEF_DEL_VENTA BEFORE DELETE ON FACTVENTAS 
+FOR EACH ROW INSERT INTO AUDITORIA_VENTAS (USUARIO,FECHA,HORA,TIPO_MOVIEMIENTO) 
+VALUES (USER(),CURDATE(),CURTIME(),'DELETE');
+
+/*ejemplo de eliminacion de venta*/ 
+DELETE FROM FACTVENTAS WHERE IDVENTAS = 8;
+
+
+/*------------------------------------------------------------------------------------*/
+
+
+
+/*tabla 2: DIMINDHOMBRE*/
+
+/*creacion tabla UPDATE_INDHOMBRE , en la cual se registran todos los movimientos en el que se realizaron modificaciones en la tabla*/ 
+CREATE TABLE UPDATE_INDHOMBRE 
+( IDINDHOMBRE INT NOT NULL, USUARIO VARCHAR(255), FECHA DATE, HORA VARCHAR(255));
+
+/*creacion del triger BEFORE update, en la cual se modifica el nombre de un producto*/ 
+CREATE TRIGGER BEF_UPDATE_IND_HOMBRE BEFORE UPDATE ON DIMINDHOMBRE 
+FOR EACH ROW INSERT INTO UPDATE_INDHOMBRE (IDINDHOMBRE,USUARIO,FECHA,HORA) 
+VALUES (IDINDHOMBRE,USER(),CURDATE(),CURTIME());
+
+/*ejemplo de update dentro de la tabla DIMINDHOMBRE*/
+ UPDATE DIMINDHOMBRE SET COLOR = 'ROJO' WHERE IDINDHOMBRE = 112233;
+
+/*creacion del triger BEFORE delete, en el cual se registran los productos eliminados*/ 
+CREATE TRIGGER BEF_DELETE_IND_HOMBRE BEFORE DELETE ON DIMINDHOMBRE 
+FOR EACH ROW INSERT INTO UPDATE_INDHOMBRE (IDINDHOMBRE,USUARIO,FECHA,HORA)
+ VALUES (IDINDHOMBRE,USER(),CURDATE(),CURTIME());
+
+/*ejemplo de delete dentro de la tabla DIMINDHOMBRE*/ 
+DELETE FROM DIMINDHOMBRE WHERE IDINDHOMBRE = 112233;
+ 
+ 
+ 
